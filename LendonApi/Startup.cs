@@ -31,6 +31,7 @@ namespace LendonApi
             services.AddMvc(options =>
             {
                 options.Filters.Add<JsonExceptionFilter>();
+                options.Filters.Add<RequireHttpsOrCloseAttribute>();
             });
             services.AddControllers();
 
@@ -59,8 +60,10 @@ namespace LendonApi
                 app.UseSwaggerUi3();
 
             }
-
-            app.UseHttpsRedirection();
+            else
+            {
+                app.UseHsts();
+            }
 
             app.UseRouting();
 
