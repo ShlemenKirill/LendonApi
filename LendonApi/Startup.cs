@@ -13,6 +13,10 @@ using System.Threading.Tasks;
 using NSwag.AspNetCore;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using LendonApi.Filters;
+using LendonApi.Models;
+using Microsoft.EntityFrameworkCore;
+using LendonApi.Services;
+using LendonApi.Infrastructure;
 
 namespace LendonApi
 {
@@ -28,12 +32,17 @@ namespace LendonApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<HotelInfo>(Configuration.GetSection("Info"));
             services.AddMvc(options =>
             {
                 options.Filters.Add<JsonExceptionFilter>();
                 options.Filters.Add<RequireHttpsOrCloseAttribute>();
             });
             services.AddControllers();
+
+            services.AddScoped<IRoomService, DefaultRoomService>();
+
+            services.AddDbContext<HotelApiDbContext>(options => options.UseInMemoryDatabase("landondb"));
 
             services.AddRouting(options => options.LowercaseUrls = true);
 
@@ -47,6 +56,9 @@ namespace LendonApi
                 options.ReportApiVersions = true;
                 options.ApiVersionSelector = new CurrentImplementationApiVersionSelector(options);
             });
+
+            services.AddAutoMapper(
+                options => options.AddProfile<MappingProfile>());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
