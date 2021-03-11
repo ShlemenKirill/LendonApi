@@ -17,6 +17,7 @@ using LendonApi.Models;
 using Microsoft.EntityFrameworkCore;
 using LendonApi.Services;
 using LendonApi.Infrastructure;
+using LandonApi.Filters;
 
 namespace LendonApi
 {
@@ -37,6 +38,7 @@ namespace LendonApi
             {
                 options.Filters.Add<JsonExceptionFilter>();
                 options.Filters.Add<RequireHttpsOrCloseAttribute>();
+                options.Filters.Add<LinkRewritingFilter>();
             });
             services.AddControllers();
 
