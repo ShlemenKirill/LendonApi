@@ -22,10 +22,19 @@ namespace LendonApi.Controllers
             _roomService = roomService;
         }
 
-        [HttpGet(Name = nameof(GetRooms))]
-        public IActionResult GetRooms()
+        [HttpGet(Name = nameof(GetAllRooms))]
+        [ProducesResponseType(200)]
+        public async Task<Collection<Room>> GetAllRooms()
         {
-            throw new NotImplementedException();
+            var rooms =await _roomService.GetRoomsAsync();
+
+            var collection = new Collection<Room>
+            {
+                Self = Link.ToCollection(nameof(GetAllRooms)),
+                Value = rooms.ToArray()
+            };
+
+            return collection;
         }
 
         [HttpGet("{roomId}", Name = nameof(GetRoomById))]
